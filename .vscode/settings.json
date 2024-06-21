@@ -1,0 +1,8 @@
+{
+    "python.autoComplete.extraPaths": [
+      "/root/mlinxiang/StyleAvatar"
+    ],
+    "python.analysis.extraPaths": [
+        "/root/mlinxiang/StyleAvatar"
+    ]
+  }

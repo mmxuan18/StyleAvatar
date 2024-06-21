@@ -190,3 +190,62 @@ class TDMMDataset(Dataset):
         out = self.transform(out)
 
         return out, tdmm
+
+
+class RestoreDataset(Dataset):
+    def __init__(self, path, transform):
+        self.gt_path = os.path.join(path, "gt")
+        self.lq_path = os.path.join(path, "lq")
+        self.mask_path = os.path.join(path, "mask")
+        
+        self.img_list = []
+        for line in open(os.path.join(path, "img_list.txt")):
+            self.img_list.append(os.path.join(path, line.strip()))
+
+        print(f"total={len(self.img_list)}")
+        # self.img_list.sort()
+        self.length = len(self.img_list)
+
+        self.path = path
+        self.transform = transform
+        import mediapipe as mp
+        self.mp_face_mesh = mp.solutions.face_mesh.FaceMesh()
+
+    def __len__(self):
+        return self.length
+
+    def __getitem__(self, index):
+        gt_path = self.img_list[index]
+        lq_path = gt_path.replace(self.gt_path, self.lq_path)
+        mask_path = gt_path.replace(self.gt_path, self.mask_path)
+        
+        gt_img = cv2.imread(gt_path)[:, :, :3]
+        lq_img = cv2.imread(lq_path)[:, :, :3]
+        mask_img = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+        
+        contours, _ = cv2.findContours(mask_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        filled_mask = np.zeros_like(mask_img)
+        cv2.drawContours(filled_mask, contours, -1, 255, thickness=-1)
+
+        w_filled_mask = filled_mask / 255.
+        w_filled_mask = np.expand_dims(w_filled_mask, axis=-1)
+        merge_img = (((gt_img / 255. * (1 - w_filled_mask)) + (lq_img / 255. * w_filled_mask)) * 255).astype(np.uint8)
+
+        origin = cv2.cvtColor(gt_img, cv2.COLOR_BGR2RGB)
+        origin = cv2.resize(origin, (1024, 1024), interpolation=cv2.INTER_LINEAR)
+        origin_image = Image.fromarray(origin)
+        origin_image = self.transform(origin_image)
+
+        mask_image = cv2.cvtColor(merge_img, cv2.COLOR_BGR2RGB)
+        mask_image = cv2.resize(mask_image, (1024, 1024), interpolation=cv2.INTER_LINEAR)
+        mask_image = Image.fromarray(mask_image)
+        mask_image = self.transform(mask_image)
+
+        return origin_image, mask_image
+    
+
+if __name__ == "__main__":
+    d = RestoreDataset("/root/mlinxiang/vh_exp/FaceFormer/HDTF/render", "")
+    for item in d:
+        
+        print("")

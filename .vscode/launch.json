@@ -1,0 +1,42 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        // {
+        //     "name": "Python Debugger: Current File with Arguments",
+        //     // "type": "debugpy",
+        //     "type": "python",
+        //     "request": "launch",
+        //     "program": "${file}",
+        //     "python": "${command:python.interpreterPath}",
+        //     "cwd": "${workspaceFolder}/FaceVerse",
+        //     "console": "integratedTerminal",
+        //     "args": ["--input", "${workspaceFolder}/FaceVerse/example/videos/clip.mp4", 
+        //     "--res_folder", "${workspaceFolder}/FaceVerse/faceversev3_jittor/output/video", 
+        //     "--skip_frames", "1", "--smooth",
+        //     "--save_for_styleavatar", "--crop_size", "1536",
+        //      "--id_folder", "/root/mlinxiang/StyleAvatar/FaceVerse/faceversev3_jittor/output/test"],
+        //     "env": {
+        //         "PYTHONPATH": "${workspaceFolder}/FaceVerse/faceversev3_jittor",
+        //         // ./data/guide.mp4
+        //       }
+        // },
+        {
+            "name": "Python Debugger: Current File with Arguments 1",
+            // "type": "debugpy",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "python": "${command:python.interpreterPath}",
+            "cwd": "${workspaceFolder}/styleunet",
+            "console": "integratedTerminal",
+            "args": ["--batch", "3", "--ckpt", "${workspaceFolder}/styleunet/pretrained/superresolution_full.pt", "--mode", "4", "--augment", "--augment_p", "0.01", "/data_czzou/mlinxiang/vh_exp/FaceFormer/HDTF/render/"],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/styleunet",
+                // ./data/guide.mp4
+              }
+        }
+    ]
+}

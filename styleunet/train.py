@@ -208,7 +208,7 @@ def train(args, loader, generator, discriminator, g_ema, g_optim, d_optim, devic
                         f"logs/sample/{args.savename}_{str(i).zfill(6)}.png",
                         nrow=int(args.batch ** 0.5),
                         normalize=True,
-                        range=(-1, 1)
+                        # range=(-1, 1)
                     )
 
             if i % 5000 == 0 and i != args.start_iter:
@@ -284,6 +284,12 @@ if __name__ == "__main__":
         args.l1_loss_w = 1
         args.vgg_loss_w = 0
         args.use_concat = True
+    elif args.mode == 4:
+        from dataset import RestoreDataset
+        dataset = RestoreDataset(args.path, transform)
+        args.savename = 'inpainting'
+        args.input_size = 1024
+        args.output_size = 1024
 
     device = "cuda"
     n_gpu = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1

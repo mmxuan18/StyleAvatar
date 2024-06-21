@@ -261,7 +261,7 @@ def train(args, loader, back_generator, face_generator, image_generator, discrim
                         f"logs/sample/{args.savename}_{str(i).zfill(6)}.png",
                         nrow=int(args.batch ** 0.5),
                         normalize=True,
-                        range=(-1, 1)
+                        # range=(-1, 1)
                     )
 
             if i % 5000 == 0 and i != args.start_iter:
